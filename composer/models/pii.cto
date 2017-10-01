@@ -1,0 +1,62 @@
+/**
+ * A business network where members can grant/revoke access to their personal information to other members
+ */
+namespace org.acme.pii
+
+concept Address {
+    o String street
+    o String house
+    o String city
+    o String county
+    o String country
+    o String zip
+}
+
+participant User identified by email {
+    o String email
+    o String firstName
+    o String lastName
+    o DateTime dob optional
+    o Address address optional
+    o String[] authorized optional
+}
+
+participant Retailer identified by email {
+    o String email
+    o String companyName
+    o String[] authorized optional
+}
+
+asset Request identified by requestId {
+ 	o String requestId
+    o String requestData
+    --> Retailer retailer
+}
+
+asset Response identified by responseId {
+ 	o String responseId
+    --> Request request
+    --> User user
+    o String response
+}
+
+transaction RequestAccess {
+	o Request request
+}
+
+transaction YesResponse {
+  	--> Request request
+}
+
+transaction NoResponse {
+  	--> Request request
+}
+
+transaction CounterOfferResponse {
+  --> Request request
+  	o String price
+}
+
+event AccessRequested {
+  o Request request
+}
